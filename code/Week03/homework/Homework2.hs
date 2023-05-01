@@ -7,12 +7,14 @@
 
 module Homework2 where
 
-import           Plutus.V2.Ledger.Api (BuiltinData, POSIXTime, PubKeyHash,
-                                       ScriptContext, Validator,
-                                       mkValidatorScript)
-import           PlutusTx             (applyCode, compile, liftCode)
-import           PlutusTx.Prelude     (Bool (False), (.))
-import           Utilities            (wrapValidator)
+import Plutus.V1.Ledger.Interval
+import Plutus.V2.Ledger.Api -- (BuiltinData, POSIXTime, PubKeyHash,
+                                       -- ScriptContext, Validator,
+                                       -- mkValidatorScript)
+import PlutusTx             -- (applyCode, compile, liftCode)
+import PlutusTx.Prelude     -- (Bool (False), (.))
+
+import Utilities -- (wrapValidator)
 
 ---------------------------------------------------------------------------------------------------
 ----------------------------------- ON-CHAIN / VALIDATOR ------------------------------------------
@@ -20,7 +22,14 @@ import           Utilities            (wrapValidator)
 {-# INLINABLE mkParameterizedVestingValidator #-}
 -- This should validate if the transaction has a signature from the parameterized beneficiary and the deadline has passed.
 mkParameterizedVestingValidator :: PubKeyHash -> POSIXTime -> () -> ScriptContext -> Bool
-mkParameterizedVestingValidator _beneficiary _deadline () _ctx = False -- FIX ME!
+mkParameterizedVestingValidator _beneficiary _deadline () _ctx =
+    let signedBy      = (`elem` signatories)
+        afterDeadline = from _deadline `contains` validRange
+    in  signedBy _beneficiary && afterDeadline
+    where
+        info        = scriptContextTxInfo _ctx
+        signatories = txInfoSignatories info
+        validRange  = txInfoValidRange info
 
 {-# INLINABLE  mkWrappedParameterizedVestingValidator #-}
 mkWrappedParameterizedVestingValidator :: PubKeyHash -> BuiltinData -> BuiltinData -> BuiltinData -> ()

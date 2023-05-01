@@ -7,12 +7,14 @@
 
 module Homework1 where
 
-import           Plutus.V2.Ledger.Api (BuiltinData, POSIXTime, PubKeyHash,
-                                       ScriptContext, Validator,
-                                       mkValidatorScript)
-import           PlutusTx             (compile, unstableMakeIsData)
-import           PlutusTx.Prelude     (Bool (..))
-import           Utilities            (wrapValidator)
+import Plutus.V1.Ledger.Interval
+import Plutus.V2.Ledger.Api -- (BuiltinData, POSIXTime, PubKeyHash,
+                                    --    ScriptContext, Validator,
+                                    --    mkValidatorScript)
+import PlutusTx             -- (compile, unstableMakeIsData)
+import PlutusTx.Prelude     -- (Bool (..))
+
+import Utilities -- (wrapValidator)
 
 ---------------------------------------------------------------------------------------------------
 ----------------------------------- ON-CHAIN / VALIDATOR ------------------------------------------
@@ -22,14 +24,22 @@ data VestingDatum = VestingDatum
     , beneficiary2 :: PubKeyHash
     , deadline     :: POSIXTime
     }
-
 unstableMakeIsData ''VestingDatum
 
 {-# INLINABLE mkVestingValidator #-}
 -- This should validate if either beneficiary1 has signed the transaction and the current slot is before or at the deadline
 -- or if beneficiary2 has signed the transaction and the deadline has passed.
 mkVestingValidator :: VestingDatum -> () -> ScriptContext -> Bool
-mkVestingValidator _dat () _ctx = False -- FIX ME!
+mkVestingValidator _dat () _ctx =
+    let signedBy       = (`elem` signatories)
+        beforeDeadline = deadline _dat `after` validRange
+        afterDeadline  = deadline _dat `before` validRange
+    in (signedBy (beneficiary1 _dat) && beforeDeadline) ||
+       (signedBy (beneficiary2 _dat) && afterDeadline)
+    where
+        info        = scriptContextTxInfo _ctx
+        signatories = txInfoSignatories info
+        validRange  = txInfoValidRange info
 
 {-# INLINABLE  mkWrappedVestingValidator #-}
 mkWrappedVestingValidator :: BuiltinData -> BuiltinData -> BuiltinData -> ()
