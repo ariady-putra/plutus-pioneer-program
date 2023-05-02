@@ -1,18 +1,24 @@
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ImportQualifiedPost   #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NoImplicitPrelude     #-}
 {-# LANGUAGE OverloadedStrings     #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TemplateHaskell       #-}
+{-# LANGUAGE TypeApplications      #-}
 
 module Homework2 where
 
+import Control.Monad
+
+import PlutusTx.Builtins.Class
 import Plutus.V1.Ledger.Interval
 import Plutus.V2.Ledger.Api -- (BuiltinData, POSIXTime, PubKeyHash,
                                        -- ScriptContext, Validator,
                                        -- mkValidatorScript)
 import PlutusTx             -- (applyCode, compile, liftCode)
 import PlutusTx.Prelude     -- (Bool (False), (.))
+import Prelude qualified
 
 import Utilities -- (wrapValidator)
 
@@ -38,3 +44,20 @@ mkWrappedParameterizedVestingValidator = wrapValidator . mkParameterizedVestingV
 
 validator :: PubKeyHash -> Validator
 validator beneficiary = mkValidatorScript ($$(compile [|| mkWrappedParameterizedVestingValidator ||]) `applyCode` liftCode beneficiary)
+
+---------------------------------------------------------------------------------------------------
+------------------------------------- HELPER FUNCTIONS --------------------------------------------
+
+saveVal :: Prelude.IO ()
+saveVal = forM_ ["nami", "eternl"] (\ wallet ->
+    do
+        let pkhFile    = "./homework/assets/pkh_" ++ wallet ++ ".txt"
+            plutusFile = "./homework/assets/Homework2" ++ wallet ++ ".plutus"
+        
+        strPKH <- Prelude.readFile pkhFile
+        
+        let bbsPKH = stringToBuiltinByteString strPKH
+            bnfPKH = PubKeyHash bbsPKH
+        
+        writeValidatorToFile plutusFile $ validator bnfPKH
+    )
