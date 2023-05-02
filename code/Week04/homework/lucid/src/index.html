@@ -169,6 +169,57 @@
                       </div>
                   </div>
                   
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingVestW04H2">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#w04h2vest" aria-expanded="false" aria-controls="w04h2vest">
+                            Week04/Homework2 Parameterized Vest
+                        </button>
+                    </h2>
+                    <div id="w04h2vest" class="accordion-collapse collapse" aria-labelledby="headingVestW04H2"
+                        data-bs-parent="#actions">
+                        <div class="accordion-body">
+                            <label for="w04h2VestBeneficiary" class="form-label">Beneficiary Script</label>
+                            <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="w04h2VestBeneficiary" >
+                              <option hidden disabled selected value>(this determines the contract address)</option>
+                              <option value="Nami">Nami</option>
+                              <option value="Eternl">Eternl</option>
+                            </select>
+                            
+                            <label for="w04h2VestAmountText" class="form-label">Amount (ADA)</label>
+                            <input type="number" min="0" class="form-control form-control-sm" id="w04h2VestAmountText" />
+                            
+                            <label for="w04h2VestDeadlineText" class="form-label">Deadline</label>
+                            <input type="text" class="form-control form-control-sm dtp" id="w04h2VestDeadlineText" />
+                            
+                            <button class="btn btn-primary" type="button" id="w04h2VestButton">Vest</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingClaimW04H2">
+                      <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                          data-bs-target="#w04h2claim" aria-expanded="false" aria-controls="w04h2claim">
+                          Week04/Homework2 Claim
+                      </button>
+                  </h2>
+                  <div id="w04h2claim" class="accordion-collapse collapse" aria-labelledby="headingClaimW04H2"
+                      data-bs-parent="#actions">
+                      <div class="accordion-body">
+                          <label for="w04h2ClaimBeneficiary" class="form-label">Beneficiary Script</label>
+                          <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="w04h2ClaimBeneficiary" >
+                            <option hidden disabled selected value>(this determines the contract address)</option>
+                            <option value="Nami">Nami</option>
+                            <option value="Eternl">Eternl</option>
+                          </select>
+                          <label for="w04h2ClaimReferenceText" class="form-label">TxHash#TxIndex</label>
+                          <input type="text" class="form-control form-control-sm" id="w04h2ClaimReferenceText" />
+                          <button class="btn btn-primary" type="button" id="w04h2ClaimButton">Claim</button>
+                      </div>
+                    </div>
+                  </div>
+                  
                 </div>
             </div>
             <div class="col-8">
