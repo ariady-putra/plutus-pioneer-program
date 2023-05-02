@@ -1,9 +1,10 @@
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell   #-}
-{-# LANGUAGE TypeApplications  #-}
-{-# LANGUAGE TypeFamilies      #-}
+{-# LANGUAGE DataKinds           #-}
+{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE TemplateHaskell     #-}
+{-# LANGUAGE TypeApplications    #-}
+{-# LANGUAGE TypeFamilies        #-}
 
 module Homework1 where
 
@@ -13,6 +14,7 @@ import Plutus.V2.Ledger.Api -- (BuiltinData, POSIXTime, PubKeyHash,
                                     --    mkValidatorScript)
 import PlutusTx             -- (compile, unstableMakeIsData)
 import PlutusTx.Prelude     -- (Bool (..))
+import Prelude qualified
 
 import Utilities -- (wrapValidator)
 
@@ -47,3 +49,9 @@ mkWrappedVestingValidator = wrapValidator mkVestingValidator
 
 validator :: Validator
 validator = mkValidatorScript $$(compile [|| mkWrappedVestingValidator ||])
+
+---------------------------------------------------------------------------------------------------
+------------------------------------- HELPER FUNCTIONS --------------------------------------------
+
+saveVal :: Prelude.IO ()
+saveVal = writeValidatorToFile "./homework/assets/Homework1.plutus" validator
