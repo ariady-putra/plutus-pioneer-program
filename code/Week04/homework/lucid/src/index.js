@@ -196,22 +196,22 @@ const misteryDatum = L.Data.Object({
   deadline: L.Data.BigInt,
 });
 
-async function onW04H1() {
+async function onVestW04H1() {
   const ownPKH = await getCardanoPKH();
   console.log("Own PKH: " + ownPKH);
 
-  const beneficiaryOption1 = document.getElementById("w04h1Beneficiary1");
+  const beneficiaryOption1 = document.getElementById("w04h1VestBeneficiary1");
   const beneficiaryWallet1 = beneficiaryOption1.value;
   const beneficiary1 = getPKH(beneficiaryWallet1);
 
-  const beneficiaryOption2 = document.getElementById("w04h1Beneficiary2");
+  const beneficiaryOption2 = document.getElementById("w04h1VestBeneficiary2");
   const beneficiaryWallet2 = beneficiaryOption2.value;
   const beneficiary2 = getPKH(beneficiaryWallet2);
 
-  const amountText = document.getElementById("w04h1AmountText");
+  const amountText = document.getElementById("w04h1VestAmountText");
   const amount = BigInt(parseFloat(amountText.value) * 1_000_000);
 
-  const deadlineText = document.getElementById("w04h1DeadlineText");
+  const deadlineText = document.getElementById("w04h1VestDeadlineText");
   const deadline = BigInt(Date.parse(deadlineText.value));
 
   console.log("Beneficiary 1: " + beneficiary1);
@@ -236,6 +236,50 @@ async function onW04H1() {
   beneficiaryOption2.selectedIndex = "0";
   amountText.value = "";
   deadlineText.value = "";
+}
+
+async function onClaimW04H1() {
+  const pkh = await getCardanoPKH();
+
+  const referenceText = document.getElementById("w04h1ClaimReferenceText");
+  const reference = referenceText.value;
+  const chunks = reference.split("#");
+  const txHash = chunks[0];
+  const txIdx = parseInt(chunks[1]);
+
+  // Find UTxO
+  const misteryAddress = lucid.utils.validatorToAddress(misteryScript);
+  const utxos = await lucid.utxosAt(misteryAddress);
+  const utxo = [];
+  for (const u of utxos) {
+    if (u.txHash == txHash && u.outputIndex == txIdx) {
+      utxo.push(u);
+      break;
+    }
+  }
+  if (utxo.length != 0) {
+    const emptyConstr = new L.Constr(0, []); // Haskel Unit -- ()
+    const emptyData = L.Data.to(emptyConstr); // redeemer
+
+    const now = Date.now();
+    const later = now + 3600_000; // +1hour
+
+    const tx = await lucid
+      .newTx()
+      .collectFrom(utxo, emptyData)
+      .attachSpendingValidator(misteryScript)
+      .addSignerKey(pkh)
+      .validFrom(now)
+      .validTo(later)
+      .complete();
+
+    const signedTx = await tx.sign().complete();
+    await submitCardanoTx(signedTx);
+
+    referenceText.value = "";
+  } else {
+    console.log("UTxO not found");
+  }
 }
 
 async function onVest() {
@@ -307,7 +351,12 @@ $(function () {
 setStatus();
 setInterval(setStatus, 5000);
 
-document.getElementById("w04h1Button").addEventListener("click", onW04H1);
+document
+  .getElementById("w04h1VestButton")
+  .addEventListener("click", onVestW04H1);
+document
+  .getElementById("w04h1ClaimButton")
+  .addEventListener("click", onClaimW04H1);
 
 document.getElementById("vestButton").addEventListener("click", onVest);
 document.getElementById("claimButton").addEventListener("click", onClaim);

@@ -118,37 +118,54 @@
                     
                     <!-- Week04 -->
                     <div class="accordion-item">
-                      <h2 class="accordion-header" id="headingW04H1">
+                      <h2 class="accordion-header" id="headingVestW04H1">
                           <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                              data-bs-target="#w04h1" aria-expanded="true" aria-controls="w04h1">
-                              Week04/Homework1
+                              data-bs-target="#w04h1vest" aria-expanded="true" aria-controls="w04h1vest">
+                              Week04/Homework1 Vest
                           </button>
                       </h2>
-                      <div id="w04h1" class="accordion-collapse collapse show" aria-labelledby="headingW04H1"
+                      <div id="w04h1vest" class="accordion-collapse collapse show" aria-labelledby="headingVestW04H1"
                           data-bs-parent="#actions">
                           <div class="accordion-body">
-                              <label for="w04h1Beneficiary1" class="form-label">Beneficiary 1</label>
-                              <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="w04h1Beneficiary1" >
+                              <label for="w04h1VestBeneficiary1" class="form-label">Beneficiary 1</label>
+                              <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="w04h1VestBeneficiary1" >
                                 <option hidden disabled selected value></option>
                                 <option value="Nami">Nami</option>
                                 <option value="Eternl">Eternl</option>
                               </select>
                               
-                              <label for="w04h1Beneficiary2" class="form-label">Beneficiary 2</label>
-                              <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="w04h1Beneficiary2" >
+                              <label for="w04h1VestBeneficiary2" class="form-label">Beneficiary 2</label>
+                              <select class="form-select form-select-sm" aria-label=".form-select-sm example" id="w04h1VestBeneficiary2" >
                                 <option hidden disabled selected value></option>
                                 <option value="Nami">Nami</option>
                                 <option value="Eternl">Eternl</option>
                               </select>
                               
-                              <label for="w04h1AmountText" class="form-label">Amount (ADA)</label>
-                              <input type="number" class="form-control form-control-sm" id="w04h1AmountText" />
+                              <label for="w04h1VestAmountText" class="form-label">Amount (ADA)</label>
+                              <input type="number" min="0" class="form-control form-control-sm" id="w04h1VestAmountText" />
                               
-                              <label for="w04h1DeadlineText" class="form-label">Deadline</label>
-                              <input type="text" class="form-control form-control-sm dtp" id="w04h1DeadlineText" />
+                              <label for="w04h1VestDeadlineText" class="form-label">Deadline</label>
+                              <input type="text" class="form-control form-control-sm dtp" id="w04h1VestDeadlineText" />
                               
-                              <button class="btn btn-primary" type="button" id="w04h1Button">Submit</button>
+                              <button class="btn btn-primary" type="button" id="w04h1VestButton">Vest</button>
                           </div>
+                      </div>
+                  </div>
+                  
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingClaimW04H1">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#w04h1claim" aria-expanded="false" aria-controls="w04h1claim">
+                            Week04/Homework1 Claim
+                        </button>
+                    </h2>
+                    <div id="w04h1claim" class="accordion-collapse collapse" aria-labelledby="headingClaimW04H1"
+                        data-bs-parent="#actions">
+                        <div class="accordion-body">
+                            <label for="w04h1ClaimReferenceText" class="form-label">TxHash#TxIndex</label>
+                            <input type="text" class="form-control form-control-sm" id="w04h1ClaimReferenceText" />
+                            <button class="btn btn-primary" type="button" id="w04h1ClaimButton">Claim</button>
+                        </div>
                       </div>
                   </div>
                   
