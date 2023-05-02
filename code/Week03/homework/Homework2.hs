@@ -25,7 +25,8 @@ mkParameterizedVestingValidator :: PubKeyHash -> POSIXTime -> () -> ScriptContex
 mkParameterizedVestingValidator _beneficiary _deadline () _ctx =
     let signedBy      = (`elem` signatories)
         afterDeadline = from _deadline `contains` validRange
-    in  signedBy _beneficiary && afterDeadline
+    in  traceIfFalse "Deadline has NOT passed" afterDeadline &&
+        traceIfFalse "Invalid beneficiary" (signedBy _beneficiary)
     where
         info        = scriptContextTxInfo _ctx
         signatories = txInfoSignatories info

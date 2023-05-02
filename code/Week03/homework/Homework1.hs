@@ -34,8 +34,8 @@ mkVestingValidator _dat () _ctx =
     let signedBy       = (`elem` signatories)
         beforeDeadline = deadline _dat `after` validRange
         afterDeadline  = deadline _dat `before` validRange
-    in (signedBy (beneficiary1 _dat) && beforeDeadline) ||
-       (signedBy (beneficiary2 _dat) && afterDeadline)
+    in (beforeDeadline && traceIfFalse "Before deadline but not signed by B1" (signedBy $ beneficiary1 _dat)) ||
+       (afterDeadline && traceIfFalse "After deadline but not signed by B2" (signedBy $ beneficiary2 _dat))
     where
         info        = scriptContextTxInfo _ctx
         signatories = txInfoSignatories info

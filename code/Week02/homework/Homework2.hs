@@ -4,6 +4,7 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE TemplateHaskell     #-}
+{-# LANGUAGE OverloadedStrings   #-}
 
 module Homework2 where
 
@@ -26,7 +27,9 @@ PlutusTx.unstableMakeIsData ''MyRedeemer
 {-# INLINABLE mkValidator #-}
 -- Create a validator that unlocks the funds if MyRedemeer's flags are different
 mkValidator :: () -> MyRedeemer -> PlutusV2.ScriptContext -> Bool
-mkValidator _ r _ = flag1 r /= flag2 r
+mkValidator _ r _ =
+    traceIfFalse "Flag1 is False" (flag1 r) /=
+    traceIfFalse "Flag2 is False" (flag2 r)
 
 wrappedVal :: BuiltinData -> BuiltinData -> BuiltinData -> ()
 wrappedVal = wrapValidator mkValidator

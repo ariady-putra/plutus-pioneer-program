@@ -2,6 +2,7 @@
 {-# LANGUAGE ImportQualifiedPost #-}
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE TemplateHaskell     #-}
+{-# LANGUAGE OverloadedStrings   #-}
 
 module Homework1 where
 
@@ -17,7 +18,9 @@ import Utilities -- (wrapValidator)
 {-# INLINABLE mkValidator #-}
 -- This should validate if and only if the two Booleans in the redeemer are True!
 mkValidator :: () -> (Bool, Bool) -> PlutusV2.ScriptContext -> Bool
-mkValidator _ (x,y) _ = x && y
+mkValidator _ (x,y) _ =
+    traceIfFalse "X is False" x &&
+    traceIfFalse "Y is False" y
 
 wrappedVal :: BuiltinData -> BuiltinData -> BuiltinData -> ()
 wrappedVal = wrapValidator mkValidator
