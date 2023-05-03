@@ -1,4 +1,5 @@
 {-# LANGUAGE DataKinds             #-}
+{-# LANGUAGE ImportQualifiedPost   #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NoImplicitPrelude     #-}
 {-# LANGUAGE OverloadedStrings     #-}
@@ -7,13 +8,17 @@
 
 module Homework2 where
 
-import           Plutus.V1.Ledger.Interval (contains)
-import           Plutus.V2.Ledger.Api
-import           Plutus.V2.Ledger.Contexts (txSignedBy)
-import           PlutusTx                  (applyCode, compile, liftCode)
-import           PlutusTx.Prelude          (Bool (..), traceIfFalse, (&&), (.))
-import           Prelude                   (IO)
-import           Utilities                 (wrapValidator, writeValidatorToFile)
+import Control.Monad
+
+import PlutusTx.Builtins.Class
+import Plutus.V1.Ledger.Interval -- (contains)
+import Plutus.V2.Ledger.Api
+import Plutus.V2.Ledger.Contexts -- (txSignedBy)
+import PlutusTx                  -- (applyCode, compile, liftCode)
+import PlutusTx.Prelude          -- (Bool (..), traceIfFalse, (&&), (.))
+import Prelude qualified -- (IO)
+
+import Utilities -- (wrapValidator, writeValidatorToFile)
 
 ---------------------------------------------------------------------------------------------------
 ------------------------------------------ PROMPT -------------------------------------------------
@@ -58,5 +63,16 @@ validator beneficiary = mkValidatorScript ($$(compile [|| mkWrappedParameterized
 ---------------------------------------------------------------------------------------------------
 ------------------------------------- HELPER FUNCTIONS --------------------------------------------
 
-saveVal :: PubKeyHash -> IO ()
-saveVal = writeValidatorToFile "./assets/parameterized-Mistery.plutus" . validator
+saveVal :: Prelude.IO ()
+saveVal = forM_ ["nami", "eternl"] (\ wallet ->
+    do
+        let pkhFile    = "../Week03/homework/assets/pkh_" ++ wallet ++ ".txt"
+            plutusFile = "./assets/parameterized-" ++ wallet ++ ".plutus"
+        
+        strPKH <- Prelude.readFile pkhFile
+        
+        let bbsPKH = stringToBuiltinByteString strPKH
+            bnfPKH = PubKeyHash bbsPKH
+        
+        writeValidatorToFile plutusFile $ validator bnfPKH
+    )
